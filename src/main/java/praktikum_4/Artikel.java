@@ -13,10 +13,11 @@ import java.util.List;
  */
 @Entity
 @NamedQueries({ 
+	@NamedQuery(name = "Artikel.AddArtikel", query = "INSERT INTO Artikel(a.Anr,a.bezeichnung,a.preis,a.angelegt)  VALUES (:anr,:bezeichnung,:preis,:angelegt) "),
 	@NamedQuery(name = "Artikel.findAll", query = "SELECT a FROM Artikel a ORDER BY a.anr"),
 	@NamedQuery(name = "Lieferung.findWithLieferung", query = "SELECT l FROM Lieferung l "),
 	@NamedQuery(name = "Artikel.findGroeseAlPres", query = "SELECT a FROM Artikel a  WHERE a.preis  > :preisgeb"),
-	
+	@NamedQuery(name = "Artikel.findZwiZwei", query = "SELECT a FROM Artikel  a WHERE a.anr BETWEEN   :anr1 AND :anr2"),
 })
 
 public class Artikel implements Serializable {
@@ -33,7 +34,9 @@ public class Artikel implements Serializable {
 	private BigDecimal preis;
 
 	// bi-directional many-to-one association to Lieferung
-	@OneToMany(mappedBy = "artikel")
+	@OneToMany(mappedBy = "artikel",
+			fetch = FetchType.EAGER,
+			cascade = {CascadeType.ALL})
 	private static List<Lieferung> lieferungs;
 
 	public Artikel() {
@@ -71,10 +74,12 @@ public class Artikel implements Serializable {
 		this.preis = preis;
 	}
 
+	@SuppressWarnings("static-access")
 	public List<Lieferung> getLieferungs() {
 		return this.lieferungs;
 	}
 
+	@SuppressWarnings("static-access")
 	public void setLieferungs(List<Lieferung> lieferungs) {
 		this.lieferungs = lieferungs;
 	}
@@ -92,21 +97,35 @@ public class Artikel implements Serializable {
 
 		return lieferung;
 	}
+	
+	//Eine Artikel Anlegen
+	public static int ArtikelInsert(EntityManager en,Artikel a) {
+		return en.createNamedQuery("Artikel.AddArtikel", Artikel.class).setParameter("anr", a.getAnr())
+				.setParameter("bezeichnung", a.getBezeichnung())
+				.setParameter("preis", a.getPreis())
+				.setParameter("angelegt", a.getAngelegt())
+				.executeUpdate();
+	}
 
 	// Find alle Artikel in unsere Database
 	public static List<Artikel> findAll(EntityManager en) throws SQLException {
-		return en.createQuery("Artikel.findAll", Artikel.class).getResultList();
+		return en.createNamedQuery("Artikel.findAll", Artikel.class).getResultList();
 	}
 	
 	//Artikel mit Lieferung Zeigen
 	public static List<Lieferung> findByIdWithLiferung(EntityManager em){
-		lieferungs = em.createQuery("Lieferung.findWithLieferung",Lieferung.class).getResultList();
+		lieferungs = em.createNamedQuery("Lieferung.findWithLieferung",Lieferung.class).getResultList();
 		return lieferungs;
 	}
 	
 	//alle Artikel mit einem Preis oberhalb eines gegebenen Preises lesen
 	public static List<Artikel> findGroeseAlPres(EntityManager en,BigDecimal preis) throws SQLException {
-		return en.createQuery("Artikel.findGroeseAlPres", Artikel.class).setParameter("preisgeb",preis).getResultList() ;
+		return en.createNamedQuery("Artikel.findGroeseAlPres", Artikel.class).setParameter("preisgeb",preis).getResultList() ;
+	}
+	
+	// Artikel Zwieschen Zwei number geben
+	public static List<Artikel> findByIdZwichen(EntityManager en, int anr1, int anr2) {
+		return en.createNamedQuery("Artikel.findZwiZwei", Artikel.class).setParameter("anr1",anr1).setParameter("anr2",anr2).getResultList() ;
 	}
 
 	@Override
