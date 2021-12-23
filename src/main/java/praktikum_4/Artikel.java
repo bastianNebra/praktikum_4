@@ -13,7 +13,6 @@ import java.util.List;
  */
 @Entity
 @NamedQueries({ 
-	@NamedQuery(name = "Artikel.AddArtikel", query = "INSERT INTO Artikel(a.Anr,a.bezeichnung,a.preis,a.angelegt)  VALUES (:anr,:bezeichnung,:preis,:angelegt) "),
 	@NamedQuery(name = "Artikel.findAll", query = "SELECT a FROM Artikel a ORDER BY a.anr"),
 	@NamedQuery(name = "Lieferung.findWithLieferung", query = "SELECT l FROM Lieferung l "),
 	@NamedQuery(name = "Artikel.findGroeseAlPres", query = "SELECT a FROM Artikel a  WHERE a.preis  > :preisgeb"),
@@ -41,6 +40,16 @@ public class Artikel implements Serializable {
 
 	public Artikel() {
 	}
+	
+
+	public Artikel(long anr, Date angelegt, String bezeichnung, BigDecimal preis) {
+		super();
+		this.anr = anr;
+		this.angelegt = angelegt;
+		this.bezeichnung = bezeichnung;
+		this.preis = preis;
+	}
+
 
 	public long getAnr() {
 		return this.anr;
@@ -99,12 +108,8 @@ public class Artikel implements Serializable {
 	}
 	
 	//Eine Artikel Anlegen
-	public static int ArtikelInsert(EntityManager en,Artikel a) {
-		return en.createNamedQuery("Artikel.AddArtikel", Artikel.class).setParameter("anr", a.getAnr())
-				.setParameter("bezeichnung", a.getBezeichnung())
-				.setParameter("preis", a.getPreis())
-				.setParameter("angelegt", a.getAngelegt())
-				.executeUpdate();
+	public static void ArtikelInsert(EntityManager en,Artikel a) {
+		 en.persist(a);
 	}
 
 	// Find alle Artikel in unsere Database
