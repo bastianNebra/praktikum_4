@@ -63,5 +63,10 @@ public class Lieferung implements Serializable {
 	public void setLieferant(Lieferant lieferant) {
 		this.lieferant = lieferant;
 	}
+	
+	@Override
+	public String toString() {
+		return "Lieferung [id=" + id + ", preis=" + preis + ", artikel=" + artikel + ", lieferant=" + lieferant + "]";
+	}
 
 }
