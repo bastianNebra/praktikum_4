@@ -1,6 +1,7 @@
 package praktikum_4;
 
 import java.math.BigDecimal;
+import java.sql.Date;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -41,6 +42,10 @@ public class Console {
 			for (Artikel artikel : artikels2) {
 				print(artikel);
 			}
+			
+			//New Artikel Anlegen
+			Artikel a = new Artikel(8l,new Date(0, 0, 0),"PC-Maus",preis);
+			Artikel.ArtikelInsert(em, a);
 			
 			
 		} catch (Exception e) {
