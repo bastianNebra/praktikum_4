@@ -7,14 +7,16 @@ import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
 
-
 /**
  * The persistent class for the ARTIKEL database table.
  * 
  */
 @Entity
-@NamedQueries({
-	@NamedQuery(name="Artikel.findAll", query="SELECT a FROM Artikel a"),
+@NamedQueries({ 
+	@NamedQuery(name = "Artikel.findAll", query = "SELECT a FROM Artikel a ORDER BY a.anr"),
+	@NamedQuery(name = "Lieferung.findWithLieferung", query = "SELECT l FROM Lieferung l "),
+	@NamedQuery(name = "Artikel.findGroeseAlPres", query = "SELECT a FROM Artikel a  WHERE a.preis  > :preisgeb"),
+	
 })
 
 public class Artikel implements Serializable {
@@ -30,9 +32,9 @@ public class Artikel implements Serializable {
 
 	private BigDecimal preis;
 
-	//bi-directional many-to-one association to Lieferung
-	@OneToMany(mappedBy="artikel")
-	private List<Lieferung> lieferungs;
+	// bi-directional many-to-one association to Lieferung
+	@OneToMany(mappedBy = "artikel")
+	private static List<Lieferung> lieferungs;
 
 	public Artikel() {
 	}
@@ -90,10 +92,27 @@ public class Artikel implements Serializable {
 
 		return lieferung;
 	}
+
+	// Find alle Artikel in unsere Database
+	public static List<Artikel> findAll(EntityManager en) throws SQLException {
+		return en.createQuery("Artikel.findAll", Artikel.class).getResultList();
+	}
 	
-	//Find alle Artikel in unsere Database
-		public static List<Artikel> findAll(EntityManager en) throws SQLException {
-			return en.createQuery("Artikel.findAll",Artikel.class).getResultList();
-		}
+	//Artikel mit Lieferung Zeigen
+	public static List<Lieferung> findByIdWithLiferung(EntityManager em){
+		lieferungs = em.createQuery("Lieferung.findWithLieferung",Lieferung.class).getResultList();
+		return lieferungs;
+	}
+	
+	//alle Artikel mit einem Preis oberhalb eines gegebenen Preises lesen
+	public static List<Artikel> findGroeseAlPres(EntityManager en,BigDecimal preis) throws SQLException {
+		return en.createQuery("Artikel.findGroeseAlPres", Artikel.class).setParameter("preisgeb",preis).getResultList() ;
+	}
+
+	@Override
+	public String toString() {
+		return "Artikel [anr=" + anr + ", angelegt=" + angelegt + ", bezeichnung=" + bezeichnung + ", preis=" + preis
+				+ ", lieferungs=" + lieferungs + "]";
+	}
 
 }
