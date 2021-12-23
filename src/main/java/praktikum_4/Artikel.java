@@ -109,7 +109,8 @@ public class Artikel implements Serializable {
 	
 	//Eine Artikel Anlegen
 	public static void ArtikelInsert(EntityManager en,Artikel a) {
-		 en.persist(a);
+		 en.persist(new Artikel(a.anr,a.angelegt,a.bezeichnung,a.preis));
+	
 	}
 
 	// Find alle Artikel in unsere Database
