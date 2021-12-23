@@ -44,7 +44,8 @@ public class Console {
 			}
 			
 			//New Artikel Anlegen
-			Artikel a = new Artikel(8l,new Date(0, 0, 0),"PC-Maus",preis);
+			@SuppressWarnings("deprecation")
+			Artikel a = new Artikel(7l,new Date(0, 0, 0),"PC-Tastatur",preis);
 			Artikel.ArtikelInsert(em, a);
 			
 			
