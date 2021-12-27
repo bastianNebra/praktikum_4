@@ -1,8 +1,5 @@
 package praktikum_4;
 
-import java.math.BigDecimal;
-import java.util.List;
-
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
@@ -19,8 +16,6 @@ public class Console {
 			em = emf.createEntityManager();
 			print("____CONNECTET____");
 
-			print("Halo");
-			
 
 
 			
