@@ -12,18 +12,19 @@ import java.util.List;
  * 
  */
 @Entity
-@NamedQueries({ 
-	@NamedQuery(name = "Artikel.findAll", query = "SELECT a FROM Artikel a ORDER BY a.anr"),
-	@NamedQuery(name = "Lieferung.findWithLieferung", query = "SELECT l FROM Lieferung l "),
-	@NamedQuery(name = "Artikel.findGroeseAlPres", query = "SELECT a FROM Artikel a  WHERE a.preis  > :preisgeb"),
-	@NamedQuery(name = "Artikel.findZwiZwei", query = "SELECT a FROM Artikel  a WHERE a.anr BETWEEN   :anr1 AND :anr2"),
+@NamedQueries({ @NamedQuery(name = "Artikel.findAll", query = "SELECT a FROM Artikel a ORDER BY a.anr"),
+		//@NamedQuery(name = "Lieferung.findLieferungId", query = "SELECT l FROM Lieferung l WHERE l.anr = :idNr"),
+		@NamedQuery(name = "Artike.findArtikelId", query = "SELECT a FROM Artikel  a WHERE a.anr = :idNr"),
+		@NamedQuery(name = "Artikel.findGroeseAlPres", query = "SELECT a FROM Artikel a  WHERE a.preis  > :preisgeb"),
+		@NamedQuery(name = "Artikel.findZwiZwei", query = "SELECT a FROM Artikel  a WHERE a.anr BETWEEN   :anr1 AND :anr2"),
+		@NamedQuery(name = "Artikel.Aktualisieren", query = "SELECT a FROM Artikel  a ORDER BY a.anr ASC"),
 })
 
 public class Artikel implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	private long anr;
+	private int anr;
 
 	@Temporal(TemporalType.DATE)
 	private Date angelegt;
@@ -33,16 +34,13 @@ public class Artikel implements Serializable {
 	private BigDecimal preis;
 
 	// bi-directional many-to-one association to Lieferung
-	@OneToMany(mappedBy = "artikel",
-			fetch = FetchType.EAGER,
-			cascade = {CascadeType.ALL})
+	@OneToMany(mappedBy = "artikel", fetch = FetchType.EAGER, cascade = { CascadeType.ALL })
 	private static List<Lieferung> lieferungs;
 
 	public Artikel() {
 	}
-	
 
-	public Artikel(long anr, Date angelegt, String bezeichnung, BigDecimal preis) {
+	public Artikel(int anr, Date angelegt, String bezeichnung, BigDecimal preis) {
 		super();
 		this.anr = anr;
 		this.angelegt = angelegt;
@@ -50,12 +48,11 @@ public class Artikel implements Serializable {
 		this.preis = preis;
 	}
 
-
 	public long getAnr() {
 		return this.anr;
 	}
 
-	public void setAnr(long anr) {
+	public void setAnr(int anr) {
 		this.anr = anr;
 	}
 
@@ -106,32 +103,81 @@ public class Artikel implements Serializable {
 
 		return lieferung;
 	}
-	
-	//Eine Artikel Anlegen
-	public static void ArtikelInsert(EntityManager en,Artikel a) {
-		 en.persist(new Artikel(a.anr,a.angelegt,a.bezeichnung,a.preis));
-	
+
+	// Eine Artikel Anlegen
+	public static void ArtikelInsert(EntityManager en, Artikel a) {
+		en.getTransaction().begin();
+		en.persist(new Artikel(a.anr, a.angelegt, a.bezeichnung, a.preis));
+		en.getTransaction().commit();
+
 	}
+	
+	// Eine Artikel Löschen
+		public static void ArtikelAllLoeschen(EntityManager en) {
+			en.clear();
+		}
+
+	// Eine Artikel Löschen
+	public static void ArtikelLoeschen(EntityManager en, int idNr) {
+		Artikel a = en.find(Artikel.class, idNr);
+		en.getTransaction().begin();
+		en.remove(a);
+		en.getTransaction().commit();
+
+	}
+
+	// Eine Artikel Mit Liferung Löschen
+	public static void ArtikelAendern(EntityManager en, int idNr) {
+		Artikel a = en.find(Artikel.class, idNr);
+		@SuppressWarnings("deprecation")
+		Artikel newa = new Artikel(idNr,new Date(11,2,21),"PC",new BigDecimal(100));
+		en.getTransaction().begin();
+		a.setBezeichnung(newa.bezeichnung);
+		a.setPreis(newa.preis);
+		en.getTransaction().commit();
+
+	}
+	
+	public static List<Artikel> ArtikelAktuali(EntityManager em) {
+		return em.createNamedQuery("Artikel.Aktualisieren",Artikel.class).getResultList();
+	}
+	
+	// Eine Artikel Mit Liferung Löschen
+		public static void ArtikelLiefLoeschen(EntityManager en, int idNr) {
+			Artikel a = en.find(Artikel.class, idNr);
+			Lieferung l = en.find(Lieferung.class, idNr);
+			en.getTransaction().begin();
+			en.remove(a);
+			en.remove(l);
+			en.getTransaction().commit();
+
+		}
 
 	// Find alle Artikel in unsere Database
 	public static List<Artikel> findAll(EntityManager en) throws SQLException {
 		return en.createNamedQuery("Artikel.findAll", Artikel.class).getResultList();
 	}
-	
-	//Artikel mit Lieferung Zeigen
-	public static List<Lieferung> findByIdWithLiferung(EntityManager em){
-		lieferungs = em.createNamedQuery("Lieferung.findWithLieferung",Lieferung.class).getResultList();
-		return lieferungs;
+
+	// Artikel mit Lieferung Zeigen
+	public static Object findByIdWithLiferung(EntityManager em,int idNr) {
+		Artikel a = em.createNamedQuery("Artike.findArtikelId", Artikel.class).setParameter("idNr", idNr)
+				.getSingleResult();
+		Lieferung l = em.createNamedQuery("Lieferung.findLieferungId", Lieferung.class).setParameter("idNr", idNr)
+				.getSingleResult();
+		
+		return a + "\n" + l;
 	}
-	
-	//alle Artikel mit einem Preis oberhalb eines gegebenen Preises lesen
-	public static List<Artikel> findGroeseAlPres(EntityManager en,BigDecimal preis) throws SQLException {
-		return en.createNamedQuery("Artikel.findGroeseAlPres", Artikel.class).setParameter("preisgeb",preis).getResultList() ;
+
+	// alle Artikel mit einem Preis oberhalb eines gegebenen Preises lesen
+	public static List<Artikel> findGroeseAlPres(EntityManager en, BigDecimal preis) throws SQLException {
+		return en.createNamedQuery("Artikel.findGroeseAlPres", Artikel.class).setParameter("preisgeb", preis)
+				.getResultList();
 	}
-	
+
 	// Artikel Zwieschen Zwei number geben
 	public static List<Artikel> findByIdZwichen(EntityManager en, int anr1, int anr2) {
-		return en.createNamedQuery("Artikel.findZwiZwei", Artikel.class).setParameter("anr1",anr1).setParameter("anr2",anr2).getResultList() ;
+		return en.createNamedQuery("Artikel.findZwiZwei", Artikel.class).setParameter("anr1", anr1)
+				.setParameter("anr2", anr2).getResultList();
 	}
 
 	@Override
