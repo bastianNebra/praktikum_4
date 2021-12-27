@@ -25,8 +25,6 @@ public class Console {
 			}
 
 			print("\n");
-			
-			
 
 			// Artikel mit preise großer als
 			BigDecimal preis = new BigDecimal(200);
