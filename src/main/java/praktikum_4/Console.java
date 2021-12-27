@@ -14,6 +14,8 @@ public class Console {
 		EntityManager em = null;
 		try {
 			em = emf.createEntityManager();
+			
+			
 			print("____CONNECTET____");
 
 
