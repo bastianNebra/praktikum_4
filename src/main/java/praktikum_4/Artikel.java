@@ -13,12 +13,12 @@ import java.util.List;
  */
 @Entity
 @NamedQueries({ @NamedQuery(name = "Artikel.findAll", query = "SELECT a FROM Artikel a ORDER BY a.anr"),
-		//@NamedQuery(name = "Lieferung.findLieferungId", query = "SELECT l FROM Lieferung l WHERE l.anr = :idNr"),
+		// @NamedQuery(name = "Lieferung.findLieferungId", query = "SELECT l FROM
+		// Lieferung l WHERE l.anr = :idNr"),
 		@NamedQuery(name = "Artike.findArtikelId", query = "SELECT a FROM Artikel  a WHERE a.anr = :idNr"),
 		@NamedQuery(name = "Artikel.findGroeseAlPres", query = "SELECT a FROM Artikel a  WHERE a.preis  > :preisgeb"),
 		@NamedQuery(name = "Artikel.findZwiZwei", query = "SELECT a FROM Artikel  a WHERE a.anr BETWEEN   :anr1 AND :anr2"),
-		@NamedQuery(name = "Artikel.Aktualisieren", query = "SELECT a FROM Artikel  a ORDER BY a.anr ASC"),
-})
+		@NamedQuery(name = "Artikel.Aktualisieren", query = "SELECT a FROM Artikel  a ORDER BY a.anr ASC"), })
 
 public class Artikel implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -111,11 +111,11 @@ public class Artikel implements Serializable {
 		en.getTransaction().commit();
 
 	}
-	
+
 	// Eine Artikel Löschen
-		public static void ArtikelAllLoeschen(EntityManager en) {
-			en.clear();
-		}
+	public static void ArtikelAllLoeschen(EntityManager en) {
+		en.clear();
+	}
 
 	// Eine Artikel Löschen
 	public static void ArtikelLoeschen(EntityManager en, int idNr) {
@@ -130,28 +130,28 @@ public class Artikel implements Serializable {
 	public static void ArtikelAendern(EntityManager en, int idNr) {
 		Artikel a = en.find(Artikel.class, idNr);
 		@SuppressWarnings("deprecation")
-		Artikel newa = new Artikel(idNr,new Date(11,2,21),"PC",new BigDecimal(100));
+		Artikel newa = new Artikel(idNr, new Date(11, 2, 21), "PC", new BigDecimal(100));
 		en.getTransaction().begin();
 		a.setBezeichnung(newa.bezeichnung);
 		a.setPreis(newa.preis);
 		en.getTransaction().commit();
 
 	}
-	
-	public static List<Artikel> ArtikelAktuali(EntityManager em) {
-		return em.createNamedQuery("Artikel.Aktualisieren",Artikel.class).getResultList();
-	}
-	
-	// Eine Artikel Mit Liferung Löschen
-		public static void ArtikelLiefLoeschen(EntityManager en, int idNr) {
-			Artikel a = en.find(Artikel.class, idNr);
-			Lieferung l = en.find(Lieferung.class, idNr);
-			en.getTransaction().begin();
-			en.remove(a);
-			en.remove(l);
-			en.getTransaction().commit();
 
-		}
+	public static List<Artikel> ArtikelAktuali(EntityManager em) {
+		return em.createNamedQuery("Artikel.Aktualisieren", Artikel.class).getResultList();
+	}
+
+	// Eine Artikel Mit Liferung Löschen
+	public static void ArtikelLiefLoeschen(EntityManager en, int idNr) {
+		Artikel a = en.find(Artikel.class, idNr);
+		Lieferung l = en.find(Lieferung.class, idNr);
+		en.getTransaction().begin();
+		en.remove(a);
+		en.remove(l);
+		en.getTransaction().commit();
+
+	}
 
 	// Find alle Artikel in unsere Database
 	public static List<Artikel> findAll(EntityManager en) throws SQLException {
@@ -159,12 +159,12 @@ public class Artikel implements Serializable {
 	}
 
 	// Artikel mit Lieferung Zeigen
-	public static Object findByIdWithLiferung(EntityManager em,int idNr) {
+	public static Object findByIdWithLiferung(EntityManager em, int idNr) {
 		Artikel a = em.createNamedQuery("Artike.findArtikelId", Artikel.class).setParameter("idNr", idNr)
 				.getSingleResult();
 		Lieferung l = em.createNamedQuery("Lieferung.findLieferungId", Lieferung.class).setParameter("idNr", idNr)
 				.getSingleResult();
-		
+
 		return a + "\n" + l;
 	}
 

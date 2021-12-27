@@ -19,34 +19,11 @@ public class Console {
 			em = emf.createEntityManager();
 			print("____CONNECTET____");
 
-			List<Artikel> artikels = Artikel.ArtikelAktuali(em);
-			for (Artikel artikel : artikels) {
-				print(artikel);
-			}
-
-			print("\n");
+			print("Halo");
 			
-			//Artikel mit Lieferung
-			print(Artikel.findByIdWithLiferung(em, 8));
-
-			// Artikel mit preise großer als
-			BigDecimal preis = new BigDecimal(200);
-			List<Artikel> artikels1 = Artikel.findGroeseAlPres(em, preis);
-			for (Artikel artikel : artikels1) {
-				print(artikel);
-			}
-
-			print("\n");
-
-			// Artikel zwischen 2 eingabe
-			List<Artikel> artikels2 = Artikel.findByIdZwichen(em, 2, 10);
-			for (Artikel artikel : artikels2) {
-				print(artikel);
-			}
 
 
-			Artikel.ArtikelAendern(em, 13);
-			 
+			
 
 		} catch (Exception e) {
 			e.printStackTrace();
