@@ -26,8 +26,7 @@ public class Console {
 
 			print("\n");
 			
-			//Artikel mit Lieferung
-			print(Artikel.findByIdWithLiferung(em, 8));
+			
 
 			// Artikel mit preise großer als
 			BigDecimal preis = new BigDecimal(200);

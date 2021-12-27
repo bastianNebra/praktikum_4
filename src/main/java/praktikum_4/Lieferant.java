@@ -11,7 +11,9 @@ import java.util.List;
  */
 @Entity
 @NamedQuery(name="Lieferant.findAll", query="SELECT l FROM Lieferant l")
-@NamedQuery(name="Lieferant.Zwieschen",query="SLECT l FROM Lieferant l WHERE l.lnr BEETWEN :lid1 AND :lid2 ")
+@NamedQuery(name="Lieferant.Zwieschen",query="SELECT l FROM Lieferant l WHERE l.lnr BETWEEN :lid1 AND :lid2 ")
+@NamedQuery(name="Lieferant.Aktualisiert",query="SELECT l FRom Lieferant l ORDER BY l.lnr ASC ")
+//@NamedQuery(name="Lieferung.findById",query="SELECT l FROM Lieferung l WHERE l.lnr LIKE :lid")
 public class Lieferant implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -28,6 +30,15 @@ public class Lieferant implements Serializable {
 
 	public Lieferant() {
 	}
+	
+
+	public Lieferant(long lnr, String name, String plz) {
+		super();
+		this.lnr = lnr;
+		this.name = name;
+		this.plz = plz;
+	}
+
 
 	public long getLnr() {
 		return this.lnr;
@@ -97,6 +108,48 @@ public class Lieferant implements Serializable {
 		return em.createNamedQuery("Lieferant.Zwieschen",Lieferant.class).setParameter("lid1",lid1)
 				.setParameter("lid2", lid2).getResultList();
 	}
+	
+	//Liste von Lieferant Aktualisieren
+	public static List<Lieferant> LieferantAktualisieren(EntityManager em) {
+		return em.createNamedQuery("Lieferant.Aktualisiert",Lieferant.class).getResultList();
+	}
+	
+	//Lieferant Aendern
+	public static void LieferantAender(EntityManager em, int lid) {
+		Lieferant lnew = new Lieferant(12,"Thomas Müller", "67657");
+		Lieferant l = em.find(Lieferant.class, lid);
+		
+		em.getTransaction().begin();
+		l.setName(lnew.getName());
+		l.setPlz(lnew.getPlz());
+		em.getTransaction().commit();
+	}
+	
+	//Eine Lieferant Löschen
+	public static void LieferantLoeschen(EntityManager em,int lid) {
+		Lieferant l = em.find(Lieferant.class, lid);
+		em.getTransaction().begin();
+		em.remove(l);
+		em.getTransaction().commit();
+	}
+	
+	//Lieferant Mit Lieferungen Loeschen
+	public static void LieferantMitLieferungLoeschen(EntityManager em,int lid) {
+		Lieferung l = em.createNamedQuery("Lieferung.findById", Lieferung.class)
+				.setParameter("lid", lid).getSingleResult();
+		Lieferant lt = em.find(Lieferant.class, lid);
+		em.getTransaction().begin();
+		em.remove(l);
+		em.remove(lt);
+		em.getTransaction().commit();
+	}
+	
+	//Alle Lieferant Löschen
+	public static void LieferantLoeschen(EntityManager em) {
+		
+	}
+	
+	
 	
 	
 	@Override

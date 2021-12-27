@@ -131,6 +131,7 @@ public class Artikel implements Serializable {
 		Artikel a = en.find(Artikel.class, idNr);
 		@SuppressWarnings("deprecation")
 		Artikel newa = new Artikel(idNr,new Date(11,2,21),"PC",new BigDecimal(100));
+		
 		en.getTransaction().begin();
 		a.setBezeichnung(newa.bezeichnung);
 		a.setPreis(newa.preis);
