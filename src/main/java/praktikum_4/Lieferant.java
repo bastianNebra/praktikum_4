@@ -11,6 +11,7 @@ import java.util.List;
  */
 @Entity
 @NamedQuery(name="Lieferant.findAll", query="SELECT l FROM Lieferant l")
+@NamedQuery(name="Lieferant.Zwieschen",query="SLECT l FROM Lieferant l WHERE l.lnr BEETWEN :lid1 AND :lid2 ")
 public class Lieferant implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -72,6 +73,36 @@ public class Lieferant implements Serializable {
 		lieferung.setLieferant(null);
 
 		return lieferung;
+	}
+	//Lieferant Anlegen
+	public static void LieferantAnlegen(EntityManager em, Lieferant l) {
+		em.getTransaction().begin();
+		em.persist(l);
+		em.getTransaction().commit();
+	}
+	
+	//Lieferant Lesen
+	public static List<Lieferant> LieferantLesen(EntityManager em) {
+		return em.createNamedQuery("Lieferant.findAll",Lieferant.class).getResultList();
+	}
+	
+	//Eine Bestimte Lieferant lesen
+	public static Lieferant LieferantById(EntityManager em,int lid) {
+		return em.find(Lieferant.class, lid);
+		
+	}
+	
+	//Lieferanten Zwieschen Zwei Lieferant Nummer geben
+	public static List<Lieferant> LieferantZwieschenZwei(EntityManager em, int lid1,int lid2){
+		return em.createNamedQuery("Lieferant.Zwieschen",Lieferant.class).setParameter("lid1",lid1)
+				.setParameter("lid2", lid2).getResultList();
+	}
+	
+	
+	@Override
+	public String toString() {
+		// TODO Auto-generated method stub
+		return "[ LieferantName : "+ this.getName() +" "+ "PLZ "+ this.getPlz();
 	}
 
 }
