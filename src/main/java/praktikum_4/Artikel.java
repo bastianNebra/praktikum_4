@@ -74,9 +74,7 @@ public class Artikel implements Serializable {
 		this.bezeichnung = bezeichnung;
 	}
 
-	public BigDecimal getPreis() {
-		return this.preis;
-	}
+	
 
 	public void setPreis(BigDecimal preis) {
 		this.preis = preis;
