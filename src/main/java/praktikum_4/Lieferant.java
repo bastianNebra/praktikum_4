@@ -25,7 +25,9 @@ public class Lieferant implements Serializable {
 	private String plz;
 
 	//bi-directional many-to-one association to Lieferung
-	@OneToMany(mappedBy="lieferant")
+	@OneToMany(mappedBy="lieferant",
+			fetch = FetchType.EAGER,
+			cascade = {CascadeType.ALL})
 	private List<Lieferung> lieferungs;
 
 	public Lieferant() {

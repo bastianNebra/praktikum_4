@@ -34,7 +34,9 @@ public class Artikel implements Serializable {
 	private BigDecimal preis;
 
 	// bi-directional many-to-one association to Lieferung
-	@OneToMany(mappedBy = "artikel", fetch = FetchType.EAGER, cascade = { CascadeType.ALL })
+	@OneToMany(mappedBy = "artikel", 
+			fetch = FetchType.LAZY, 
+			cascade = { CascadeType.REFRESH })
 	private static List<Lieferung> lieferungs;
 
 	public Artikel() {
