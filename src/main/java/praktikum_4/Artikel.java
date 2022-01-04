@@ -13,7 +13,6 @@ import java.util.List;
  */
 @Entity
 @NamedQueries({ @NamedQuery(name = "Artikel.findAll", query = "SELECT a FROM Artikel a ORDER BY a.anr"),
-		//@NamedQuery(name = "Lieferung.findLieferungId", query = "SELECT l FROM Lieferung l WHERE l.anr = :idNr"),
 		@NamedQuery(name = "Artike.findArtikelId", query = "SELECT a FROM Artikel  a WHERE a.anr = :idNr"),
 		@NamedQuery(name = "Artikel.findGroeseAlPres", query = "SELECT a FROM Artikel a  WHERE a.preis  > :preisgeb"),
 		@NamedQuery(name = "Artikel.findZwiZwei", query = "SELECT a FROM Artikel  a WHERE a.anr BETWEEN   :anr1 AND :anr2"),
@@ -74,7 +73,9 @@ public class Artikel implements Serializable {
 		this.bezeichnung = bezeichnung;
 	}
 
-	
+	public BigDecimal getPreis() {
+		return this.preis;
+	}
 
 	public void setPreis(BigDecimal preis) {
 		this.preis = preis;
@@ -161,12 +162,19 @@ public class Artikel implements Serializable {
 
 	// Artikel mit Lieferung Zeigen
 	public static Object findByIdWithLiferung(EntityManager em,int idNr) {
-		Artikel a = em.createNamedQuery("Artike.findArtikelId", Artikel.class).setParameter("idNr", idNr)
-				.getSingleResult();
-		Lieferung l = em.createNamedQuery("Lieferung.findLieferungId", Lieferung.class).setParameter("idNr", idNr)
-				.getSingleResult();
+		String query = "SELECT * FROM Lieferung  WHERE ANR = ?";
+		Artikel a = null;
+		Lieferung l = null;
 		
-		return a + "\n" + l;
+		try {
+			a = em.find(Artikel.class, idNr);
+			l = (Lieferung) em.createNativeQuery(query,Lieferung.class).setParameter(1, idNr).getSingleResult();
+		} catch (Exception e) {
+			
+		}
+		
+		
+		return a +"\n Lieferungen : "+ l;
 	}
 
 	// alle Artikel mit einem Preis oberhalb eines gegebenen Preises lesen
@@ -183,8 +191,7 @@ public class Artikel implements Serializable {
 
 	@Override
 	public String toString() {
-		return "Artikel [anr=" + anr + ", angelegt=" + angelegt + ", bezeichnung=" + bezeichnung + ", preis=" + preis
-				+ ", lieferungs=" + lieferungs + "]";
+		return "[anr=" + anr + ", angelegt=" + angelegt + ", bezeichnung=" + bezeichnung + ", preis=" + preis+ "]";
 	}
 
 }

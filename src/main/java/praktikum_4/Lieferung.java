@@ -113,7 +113,7 @@ public class Lieferung implements Serializable {
 
 	@Override
 	public String toString() {
-		return "Lieferung [id=" + id + ", preis=" + preis + ", artikel=" + artikel + ", lieferant=" + lieferant + "]";
+		return "[id=" + id + ", preis=" + preis  + "\n"+"Artikel=" +artikel +  "]";
 	}
 
 }

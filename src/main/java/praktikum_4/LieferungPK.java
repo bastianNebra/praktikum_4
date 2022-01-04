@@ -45,7 +45,13 @@ public class LieferungPK implements Serializable {
 			(this.lnr == castOther.lnr)
 			&& (this.anr == castOther.anr);
 	}
+	
+	
 
+	@Override
+	public String toString() {
+		return "LieferungPK [lnr=" + lnr + ", anr=" + anr + "]";
+	}
 	public int hashCode() {
 		final int prime = 31;
 		int hash = 17;

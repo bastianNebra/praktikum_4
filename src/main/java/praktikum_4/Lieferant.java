@@ -11,6 +11,7 @@ import java.util.List;
  */
 @Entity
 @NamedQuery(name="Lieferant.findAll", query="SELECT l FROM Lieferant l")
+//@NamedQuery(name="Lieferant.findById", query="SELECT l FROM Lieferant l WHERE LNR = :lnr")
 @NamedQuery(name="Lieferant.Zwieschen",query="SELECT l FROM Lieferant l WHERE l.lnr BETWEEN :lid1 AND :lid2 ")
 @NamedQuery(name="Lieferant.Aktualisiert",query="SELECT l FRom Lieferant l ORDER BY l.lnr ASC ")
 //@NamedQuery(name="Lieferung.findById",query="SELECT l FROM Lieferung l WHERE l.lnr LIKE :lid")
@@ -100,9 +101,22 @@ public class Lieferant implements Serializable {
 	}
 	
 	//Eine Bestimte Lieferant lesen
-	public static Lieferant LieferantById(EntityManager em,int lid) {
-		return em.find(Lieferant.class, lid);
+	public static Object LieferantById(EntityManager em,int LNr) {
+		String query = "SELECT * FROM Lieferant  WHERE LNR = ?";
+		String query02 = "SELECT * FROM Lieferung WHERE LNR = ?";
+		Lieferung li = null;
 		
+		Lieferant lt = (Lieferant) em.createNativeQuery(query,Lieferant.class).setParameter(1, LNr).getSingleResult();
+		try {
+			li = (Lieferung) em.createNativeQuery(query02,Lieferung.class).setParameter(1, LNr).getSingleResult();
+			if (li == null) {
+				System.out.println("Keine Lieferung vorhanden");
+			}
+		} catch (Exception e) {
+			e.getMessage();
+		}
+		
+		return lt + "\n Lieferungen : "+li;
 	}
 	
 	//Lieferanten Zwieschen Zwei Lieferant Nummer geben
@@ -157,7 +171,7 @@ public class Lieferant implements Serializable {
 	@Override
 	public String toString() {
 		// TODO Auto-generated method stub
-		return "[ LieferantName : "+ this.getName() +" "+ "PLZ "+ this.getPlz();
+		return "[ LieferantName : "+ this.getName() +"; "+ "PLZ : "+ this.getPlz() + " ]";
 	}
 
 }
