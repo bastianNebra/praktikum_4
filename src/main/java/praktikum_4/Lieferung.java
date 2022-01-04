@@ -34,6 +34,18 @@ public class Lieferung implements Serializable {
 
 	public Lieferung() {
 	}
+	
+	
+
+	public Lieferung(LieferungPK id, BigDecimal preis, Artikel artikel, Lieferant lieferant) {
+		super();
+		this.id = id;
+		this.preis = preis;
+		this.artikel = artikel;
+		this.lieferant = lieferant;
+	}
+
+
 
 	public LieferungPK getId() {
 		return this.id;
@@ -101,7 +113,7 @@ public class Lieferung implements Serializable {
 
 	@Override
 	public String toString() {
-		return "Lieferung [id=" + id + ", preis=" + preis + ", artikel=" + artikel + ", lieferant=" + lieferant + "]";
+		return "[id=" + id + ", preis=" + preis  + "\n"+"Artikel=" +artikel +  "]";
 	}
 
 }
