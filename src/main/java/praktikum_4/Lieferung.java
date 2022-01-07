@@ -10,7 +10,9 @@ import java.util.List;
  * 
  */
 @Entity
-@NamedQueries({ @NamedQuery(name = "Lieferung.findAll", query = "SELECT l FROM Lieferung l"),
+@NamedQueries({ 
+	@NamedQuery(name = "Lieferung.findAll", query = "SELECT l FROM Lieferung l"),
+	@NamedQuery(name = "Lieferung.ListeAktualisieren", query = "SELECT l FROM Lieferung l ORDER BY l.id ASC"),
 //		@NamedQuery(name = "Lieferung.findById", query = "SELECT l FROM Lieferung l WHERE l.lnr = :lNr"),
 //	@NamedQuery(name = "Lieferung.LieferungVonArtikel", query = "SELECT l FROM Lieferung l WHERE l.anr LIKE :aid")
 })
@@ -110,6 +112,10 @@ public class Lieferung implements Serializable {
 		em.remove(l);
 		em.getTransaction().commit();
 	}
+	// Lieferung Löeschen
+		public static List<Lieferung>  LLieferungAktualisieren(EntityManager em) {
+			return em.createNamedQuery("Lieferung.ListeAktualisieren", Lieferung.class).getResultList();
+		}
 
 	@Override
 	public String toString() {

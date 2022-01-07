@@ -127,7 +127,7 @@ public class Artikel implements Serializable {
 
 	}
 
-	// Eine Artikel Mit Liferung Löschen
+	// Eine Artikel Aendern
 	public static void ArtikelAendern(EntityManager en, int idNr) {
 		Artikel a = en.find(Artikel.class, idNr);
 		@SuppressWarnings("deprecation")
@@ -140,12 +140,13 @@ public class Artikel implements Serializable {
 
 	}
 	
-	public static List<Artikel> ArtikelAktuali(EntityManager em) {
+	//Liste von Artikel Aktualisieren
+	public static List<Artikel> LArtikelAktualisieren(EntityManager em) {
 		return em.createNamedQuery("Artikel.Aktualisieren",Artikel.class).getResultList();
 	}
 	
 	// Eine Artikel Mit Liferung Löschen
-		public static void ArtikelLiefLoeschen(EntityManager en, int idNr) {
+	public static void deleteWithLieferung(EntityManager en, int idNr) {
 			Artikel a = en.find(Artikel.class, idNr);
 			Lieferung l = en.find(Lieferung.class, idNr);
 			en.getTransaction().begin();
