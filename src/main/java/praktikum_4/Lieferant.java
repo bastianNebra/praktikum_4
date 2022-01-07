@@ -126,7 +126,7 @@ public class Lieferant implements Serializable {
 	}
 	
 	//Liste von Lieferant Aktualisieren
-	public static List<Lieferant> LieferantAktualisieren(EntityManager em) {
+	public static List<Lieferant> LLAktualisieren(EntityManager em) {
 		return em.createNamedQuery("Lieferant.Aktualisiert",Lieferant.class).getResultList();
 	}
 	
@@ -150,7 +150,7 @@ public class Lieferant implements Serializable {
 	}
 	
 	//Lieferant Mit Lieferungen Loeschen
-	public static void LieferantMitLieferungLoeschen(EntityManager em,int lid) {
+	public static void deleteWithLieferung(EntityManager em,int lid) {
 		Lieferung l = em.createNamedQuery("Lieferung.findById", Lieferung.class)
 				.setParameter("lid", lid).getSingleResult();
 		Lieferant lt = em.find(Lieferant.class, lid);
@@ -159,12 +159,6 @@ public class Lieferant implements Serializable {
 		em.remove(lt);
 		em.getTransaction().commit();
 	}
-	
-	//Alle Lieferant Löschen
-	public static void LieferantLoeschen(EntityManager em) {
-		
-	}
-	
 	
 	
 	
